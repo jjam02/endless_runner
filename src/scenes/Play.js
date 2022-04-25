@@ -6,6 +6,7 @@ class Play extends Phaser.Scene {
         this.load.image('city', './assets/bg.png');
         this.load.image('player','./assets/player.png')
         this.load.image('floor','./assets/floor.png')
+        this.load.image('car','./assets/car.png')
        
     }
 
@@ -20,17 +21,18 @@ class Play extends Phaser.Scene {
         this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city').setOrigin(0);
         // make ground tiles group
         this.ground = this.add.group();
-        for(let i = 0; i < game.config.width; i += tileSize) {
+        for(let i = 0; i < game.config.width; i += tileSize) { 
             let groundTile = this.physics.add.sprite(i, game.config.height - tileSize,  'floor').setScale(SCALE).setOrigin(0);
             groundTile.body.immovable = true;
             groundTile.body.allowGravity = false;
             this.ground.add(groundTile);
         }
 
-
-        this.player = this.physics.add.sprite(0, 0, game.config.width, game.config.height, 'player').setOrigin(0);
+        this.car = this.physics.add.sprite(100, 0,  'car').setOrigin(0);
+        this.player = this.physics.add.sprite(20, 0,  'player').setOrigin(0);
         // add physics collider
         this.physics.add.collider(this.player, this.ground);
+        this.physics.add.collider(this.car, this.ground);
         this.SCROLL_SPEED = 5;
         
     }
