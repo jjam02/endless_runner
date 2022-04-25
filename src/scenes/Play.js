@@ -40,10 +40,18 @@ class Play extends Phaser.Scene {
         // update tile sprites (tweak for more "speed")
         this.cityscape.tilePositionX += this.SCROLL_SPEED;
         //this.floor += this.SCROLL_SPEED;
-        if(Phaser.Input.Keyboard.JustDown(keySPACE)) {
+        this.player.onGround = this.player.body.touching.down
+        if(this.player.onGround){
+            console.log("IM ON THE GROUND");
+            this.jump = 1;
+        }
+
+        if(this.jump>0 && Phaser.Input.Keyboard.JustDown(keySPACE)) {
             console.log("I JUMPED POGGERS");
 	        this.player.body.setVelocityY(-700);
+            this.jump--;
         }
+
         
 
 }
