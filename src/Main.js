@@ -6,6 +6,7 @@
 // global variables
 let keyLeft;
 let keySPACE;
+let keyDOWN;
 let currentScene = 0;
 const SCALE = 0.5;
 const tileSize = 35;
@@ -18,7 +19,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
             gravity: {
                 x: 0,
                 y: 0
