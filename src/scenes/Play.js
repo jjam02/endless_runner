@@ -24,6 +24,7 @@ class Play extends Phaser.Scene {
         // make ground tiles group
         this.ground = this.add.group();
         this.player = this.physics.add.sprite(50, 450,  'player').setOrigin(.5,.5);
+        this.p1Health = 1;
         for(let i = 0; i < game.config.width; i += tileSize) { 
             let groundTile = this.physics.add.sprite(i, game.config.height - tileSize,  'floor').setScale(SCALE).setOrigin(0);
             let groundTile2 = this.physics.add.sprite(i, game.config.height - tileSize+10,  'floor').setScale(SCALE).setOrigin(0);
@@ -46,24 +47,36 @@ class Play extends Phaser.Scene {
         this.enemy.add(this.car);
         this.enemy.add(this.meteor);
         this.gameOver = false;
-        this.physics.add.collider(this.enemy, this.player, ()=>{this.gameOver=true});
+        this.physics.add.collider(this.enemy, this.player, ()=>{this.p1Health--});
         this.SCROLL_SPEED = 5;
+
+        this.car.body.setVelocityX(-300);
+        this.meteor.body.setVelocityX(-400);
         
+
+        //SCORING
+        this.score = 0;
+        this.scoreRight = this.add.text(game.config.width/2, 50, "Distance: "+this.score+" mi").setOrigin(0.5);
+        this.time.addEvent({ delay: 2500, callback: this.miles, callbackScope: this, loop: true });
     }
 
         
     update() {
         // update tile sprites (tweak for more "speed")
 
-
+        console.log(this.p1Health);
         if(this.gameOver){
             this.scene.start('menuScene');
         }
 
+        if(this.p1Health <= 0){
+            this.gameOver = true;
+        }
+
 
         if(!this.gameOver){
-        this.car.body.setVelocityX(-300);
-        this.meteor.body.setVelocityX(-400);
+        // this.car.body.setVelocityX(-300);
+        // this.meteor.body.setVelocityX(-400);
 
         this.cityscape.tilePositionX += this.SCROLL_SPEED;
         this.groundTile += this.SCROLL_SPEED;
@@ -84,6 +97,7 @@ class Play extends Phaser.Scene {
             console.log("OFFSCREEN XD"); 
 
             this.car.x = game.config.width+50;
+            this.car.body.setVelocityX(-1*((Math.random()*(350-300)+300)));
         }
         
         if(this.meteor.body.x <-200){
@@ -105,13 +119,20 @@ class Play extends Phaser.Scene {
             this.player.body.setVelocityY(0);
             this.player.angle = 0;
             this.player.y = 450;
-            this.player.setSize(45,70);
+            this.player.setSize(40,65);
+            this.player.setDisplaySize(45,70);
             // this.player.x = 70;
         }
-        console.log("X"+this.player.x+" Y "+this.player.y);
-        console.log(this.player.body.velocity.y);
+        //console.log("X"+this.player.x+" Y "+this.player.y);
+        console.log(this.car.body.velocity.x);
     }
 
+
+}
+
+miles(){
+    this.score +=.5;
+    this.scoreRight.text = "Distance: "+this.score + " mi";
 
 }
 
