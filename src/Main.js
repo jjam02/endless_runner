@@ -7,6 +7,7 @@
 let keyLeft;
 let keySPACE;
 let keyDOWN;
+let highScore = 0;
 let currentScene = 0;
 const SCALE = 0.5;
 const tileSize = 35;
