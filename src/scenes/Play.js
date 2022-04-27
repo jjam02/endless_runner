@@ -97,7 +97,7 @@ class Play extends Phaser.Scene {
         this.scoreRight = this.add.text(game.config.width/2, 50, "Distance: "+this.score+" mi").setOrigin(0.5);
         this.time.addEvent({ delay: 2500, callback: this.miles, callbackScope: this, loop: true });
 
-        if(highScore>0){
+        if(highScore>=0){
             this.add.text(game.config.width/2-200, 50, "High Score: "+highScore+" mi").setOrigin(0.5);
 
         //Powerup spawn
@@ -183,7 +183,7 @@ class Play extends Phaser.Scene {
             this.gameOver = true;
         }
     }
-
+    console.log("CAR SPEED VROOM: "+this.car.body.velocity.x);
 
 }
 
@@ -205,13 +205,14 @@ shieldSpawn(){
 meteor_reset(){
     this.meteor.x = game.config.width+50;
     this.meteor.setVelocityY(0);
+    this.meteor.setVelocityX(-1*((Math.random()*(600-400)+400)));
     this.meteor.y = Math.random()*(425-380)+380;
 
 }
 
 car_reset(){
     this.car.x = game.config.width+50;
-    this.num = -1*((Math.random()*(350-300)+300))
+    this.num = -1*((Math.random()*(500-300)+300))
     this.car.body.setVelocityX(this.num);
     this.hood.x = game.config.width+55;
     this.hood.body.setVelocityX(this.num);
