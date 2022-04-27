@@ -135,12 +135,16 @@ class Play extends Phaser.Scene {
             }
         }
 
-        if(this.jump>0 && Phaser.Input.Keyboard.JustDown(keySPACE)&&!keyDOWN.isDown) {
+        if(this.jump>0 && Phaser.Input.Keyboard.DownDuration(keySPACE,100)&&!keyDOWN.isDown) {
             console.log("I JUMPED POGGERS");
 	        this.player.body.setVelocityY(-800);
-            this.jump--;
             this.jumping=true;
         }
+        if(this.jumping && keyDOWN.isUp) {
+            console.log("LET GO OF SPCACE");
+	    	this.jump--;
+	    	this.jumping = false;
+	    }
 
         if(this.car.body.x <-200){
             console.log("OFFSCREEN XD"); 
@@ -183,7 +187,7 @@ class Play extends Phaser.Scene {
             this.gameOver = true;
         }
     }
-    console.log("CAR SPEED VROOM: "+this.car.body.velocity.x);
+    // console.log("CAR SPEED VROOM: "+this.car.body.velocity.x);
 
 }
 
