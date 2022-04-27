@@ -8,6 +8,7 @@ class Play extends Phaser.Scene {
         this.load.image('floor','./assets/floor.png')
         this.load.image('car','./assets/car.png')
         this.load.image('meteor','./assets/meteor.png')
+        this.load.image('shield','./assets/shield.png')
        
     }
 
@@ -23,7 +24,13 @@ class Play extends Phaser.Scene {
         this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city').setOrigin(0);
         // make ground tiles group
         this.ground = this.add.group();
+        this.power = this.add.group();
         this.player = this.physics.add.sprite(50, 450,  'player').setOrigin(.5,.5);
+        this.trash = this.add.rectangle(50,450,20,20,'yellow');
+        this.trash.alpha= 0;
+        this.shield = this.physics.add.sprite(-50, 200 ,  'shield').setOrigin(0);
+        this.shield.body.allowGravity = false;
+        this.power.add(this.shield);
         this.p1Health = 1;
         for(let i = 0; i < game.config.width; i += tileSize) { 
             let groundTile = this.physics.add.sprite(i, game.config.height - tileSize,  'floor').setScale(SCALE).setOrigin(0);
@@ -49,11 +56,35 @@ class Play extends Phaser.Scene {
         // add physics collider
         this.physics.add.collider(this.player, this.ground);
         this.physics.add.collider(this.car, this.ground);
+        this.physics.add.collider(this.shield, this.player, ()=>{
+            this.trash.alpha= 1;
+            this.player.setVelocityX(0);
+            this.player.setVelocityY(0);
+            this.shield.x = -50;
+            this.shield.y = 200;
+            this.p1Health++;
+            this.shield.body.setVelocityX(0);
+            this.shield.body.setVelocityY(0);
+        });
         this.enemy = this.add.group()
         this.enemy.add(this.car);
         this.enemy.add(this.meteor);
         this.gameOver = false;
-        this.physics.add.collider(this.enemy, this.player, ()=>{this.p1Health--});
+        
+        this.physics.add.collider(this.car,  this.player, ()=>{
+            this.trash.alpha= 0;
+            this.car_reset();
+            this.player.setVelocityX(0);
+            this.player.setVelocityY(0);
+            this.p1Health--
+        });
+        this.physics.add.collider(this.meteor, this.player, ()=>{
+            this.trash.alpha= 0;
+            this.meteor_reset();
+            this.player.setVelocityX(0);
+            this.player.setVelocityY(0);
+            this.p1Health--
+        });
         this.SCROLL_SPEED = 5;
 
         this.car.body.setVelocityX(-300);
@@ -68,6 +99,9 @@ class Play extends Phaser.Scene {
 
         if(highScore>0){
             this.add.text(game.config.width/2-200, 50, "High Score: "+highScore+" mi").setOrigin(0.5);
+
+        //Powerup spawn
+        this.time.addEvent({ delay: 10000, callback: this.shieldSpawn, callbackScope: this, loop: true });
         }
     }
 
@@ -84,8 +118,7 @@ class Play extends Phaser.Scene {
         }
 
         if(!this.gameOver){
-            console.log("player velocity " +this.player.body.velocity.x);
-            console.log("player X"+ this.player.x);
+            
 
         // this.car.body.setVelocityX(-300);
         // this.meteor.body.setVelocityX(-400);
@@ -111,19 +144,12 @@ class Play extends Phaser.Scene {
 
         if(this.car.body.x <-200){
             console.log("OFFSCREEN XD"); 
-
-            this.car.x = game.config.width+50;
-            this.num = -1*((Math.random()*(350-300)+300))
-            this.car.body.setVelocityX(this.num);
-            this.hood.x = game.config.width+55;
-            this.hood.body.setVelocityX(this.num);
+            this.car_reset();
         }
         
-        if(this.meteor.body.x <-200){
+        if(this.meteor.body.x <-200||this.meteor.body.velocity.x==0){
             console.log("OFFSCREEN XD"); 
-
-            this.meteor.x = game.config.width+50;
-            this.meteor.y = Math.random()*(425-380)+380;
+            this.meteor_reset();
         }
         
         if(keyDOWN.isDown){
@@ -144,9 +170,16 @@ class Play extends Phaser.Scene {
             // this.player.x = 70;
         }
         //console.log("X"+this.player.x+" Y "+this.player.y);
-        console.log(this.car.body.velocity.x);
+        //console.log(this.car.body.velocity.x);
+        console.log("shield: "+this.shield.body.velocity.x);
+        console.log("player health: "+this.p1Health);
+        
+        if(this.p1Health>1){
+            this.trash.x = this.player.x;
+            this.trash.y = this.player.y;
 
-        if(this.p1Health <= 0){
+        }
+        if(this.p1Health <= 0||this.player.x<-50){
             this.gameOver = true;
         }
     }
@@ -157,6 +190,31 @@ class Play extends Phaser.Scene {
 miles(){
     this.score +=.5;
     this.scoreRight.text = "Distance: "+this.score + " mi";
+
+}
+
+shieldSpawn(){
+    if(this.p1Health==1&&this.shield.x<0){
+        this.shield.x = game.config.width + 50;
+        this.shield.y =  Math.random()*(455-380)+380
+        this.shield.body.setVelocityX(-200);
+        this.shield.body.setVelocityY(0);
+    }
+}
+
+meteor_reset(){
+    this.meteor.x = game.config.width+50;
+    this.meteor.setVelocityY(0);
+    this.meteor.y = Math.random()*(425-380)+380;
+
+}
+
+car_reset(){
+    this.car.x = game.config.width+50;
+    this.num = -1*((Math.random()*(350-300)+300))
+    this.car.body.setVelocityX(this.num);
+    this.hood.x = game.config.width+55;
+    this.hood.body.setVelocityX(this.num);
 
 }
 
