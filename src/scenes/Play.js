@@ -205,7 +205,7 @@ shieldSpawn(){
 meteor_reset(){
     this.meteor.x = game.config.width+50;
     this.meteor.setVelocityY(0);
-    this.meteor.setVelocityX(-1*((Math.random()*(600-400)+400)));
+    this.meteor.setVelocityX(-1*((Math.random()*(500-400)+400)));
     this.meteor.y = Math.random()*(425-380)+380;
 
 }
