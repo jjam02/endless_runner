@@ -5,6 +5,9 @@ class Menu extends Phaser.Scene {
 
     preload() {
         this.load.image('city', './assets/bg.png');
+        this.load.audio('hit', './assets/bruh.wav');
+        this.load.audio('jump', './assets/jump.wav');
+        this.load.audio('shield', './assets/discord.wav');
     }
     create() {
         let menuConfig = {

@@ -13,6 +13,9 @@ class Play extends Phaser.Scene {
     }
 
     create() { // define keys
+        this.jump_sound = this.sound.add('jump');
+        this.hit = this.sound.add('hit');
+        this.shield_get = this.sound.add('shield');
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         
@@ -81,6 +84,7 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.player, this.ground);
         this.physics.add.collider(this.car, this.ground);
         this.physics.add.collider(this.shield, this.player, ()=>{
+            this.shield_get.play();
             this.trash.alpha= 1;
             this.player.setVelocityX(0);
             this.player.setVelocityY(0);
@@ -93,6 +97,7 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.car,  this.player, ()=>{
             this.trash.alpha= 0;
             this.car_reset();
+            this.hit.play();
             this.player.setVelocityX(0);
             this.player.setVelocityY(0);
             this.p1Health--;
@@ -100,6 +105,7 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.meteor, this.player, ()=>{
             this.trash.alpha= 0;
             this.meteor_reset();
+            this.hit.play();
             this.player.setVelocityX(0);
             this.player.setVelocityY(0);
             this.p1Health--;
@@ -198,6 +204,7 @@ class Play extends Phaser.Scene {
             // jumping controller
             if(this.jump>0 && Phaser.Input.Keyboard.DownDuration(keySPACE,100)&&!keyDOWN.isDown) {
                 // console.log("I JUMPED POGGERS");
+                this.jump_sound.play();
                 this.player.body.setVelocityY(-800);
                 this.jumping=true;
             }
