@@ -198,7 +198,7 @@ class Play extends Phaser.Scene {
             this.cityscape.setDepth(0);
             this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city2').setOrigin(0);
             this.cityscape.setDepth(0);
-            this.SCROLL_SPEED +=10;
+            this.SCROLL_SPEED +=5;
             this.SPEED_MULT = 1.5;
             }, null, this);
             this.state="behind"
