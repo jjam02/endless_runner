@@ -30,7 +30,7 @@ class Credits extends Phaser.Scene {
             },
             fixedWidth: 0
         }
-
+        this.sfx_select = this.sound.add('select');
         this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city').setOrigin(0);
 
         this.add.text(game.config.width/2 + 4, game.config.height/2 - 176, 'RunPocalypse', dropshadow).setOrigin(0.5);
@@ -58,6 +58,7 @@ class Credits extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+            this.sfx_select.play();
             this.scene.start('menuScene');    
         }
     }

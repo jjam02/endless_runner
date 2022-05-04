@@ -5,9 +5,14 @@ class Menu extends Phaser.Scene {
 
     preload() {
         this.load.image('city', './assets/bg.png');
-        this.load.audio('hit', './assets/bruh.wav');
+        this.load.audio('hit', './assets/hit.wav');
         this.load.audio('jump', './assets/jump.wav');
-        this.load.audio('shield', './assets/discord.wav');
+        this.load.audio('shield', './assets/shield.wav');
+        this.load.audio('select', './assets/select.wav');
+        this.load.audio('duck', './assets/duck.wav');
+        this.load.audio('slide', './assets/sliding.wav');
+        this.load.audio('music', './assets/among_drip.wav');
+        this.load.audio('off', './assets/shield_hit.wav');
     }
     create() {
         let menuConfig = {
@@ -54,9 +59,11 @@ class Menu extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+            this.sound.play('select');
             this.scene.start('playScene');    
         }
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+            this.sound.play('select');
             this.scene.start('creditsScene');
         }
 

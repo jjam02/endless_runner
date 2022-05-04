@@ -16,6 +16,10 @@ class Play extends Phaser.Scene {
         this.jump_sound = this.sound.add('jump');
         this.hit = this.sound.add('hit');
         this.shield_get = this.sound.add('shield');
+        this.shield_off = this.sound.add('off');
+        this.duck = this.sound.add('duck');
+        this.slide = this.sound.add('slide');
+        this.bgm = this.sound.add('music');
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         
@@ -97,7 +101,11 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.car,  this.player, ()=>{
             this.trash.alpha= 0;
             this.car_reset();
-            this.hit.play();
+            if(this.p1Health>1){
+                this.shield_off.play();
+            }else{
+                this.hit.play();  
+            }
             this.player.setVelocityX(0);
             this.player.setVelocityY(0);
             this.p1Health--;
@@ -105,7 +113,12 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.meteor, this.player, ()=>{
             this.trash.alpha= 0;
             this.meteor_reset();
-            this.hit.play();
+            if(this.p1Health>1){
+                this.shield_off.play();
+            }else{
+                this.hit.play();  
+            }
+            
             this.player.setVelocityX(0);
             this.player.setVelocityY(0);
             this.p1Health--;
@@ -158,6 +171,8 @@ class Play extends Phaser.Scene {
         // powerup spawn
         this.time.addEvent({ delay: 10000, callback: this.shieldSpawn, callbackScope: this, loop: true });
         }
+        this.bgm.setLoop(true);
+        this.bgm.play();
     }
 
         
@@ -166,6 +181,8 @@ class Play extends Phaser.Scene {
 
         // game ending handling
         if(this.gameOver){
+            this.bgm.setLoop(false);
+        this.bgm.stop();
             if(this.score>highScore){
                 highScore = this.score;
             }
@@ -229,6 +246,12 @@ class Play extends Phaser.Scene {
 
             // controlling the sliding
             if(keyDOWN.isDown){
+                if(Phaser.Input.Keyboard.JustDown(keyDOWN)){
+                   this.duck.play(); 
+                this.slide.setLoop(true);
+                this.slide.play();
+                }
+                
                 this.player.angle = 90;
                 this.player.setSize(65,40);
                 this.player.setDisplaySize(45,70);
@@ -241,6 +264,8 @@ class Play extends Phaser.Scene {
 
             // resetting after done sliding
             if(Phaser.Input.Keyboard.JustUp(keyDOWN)||this.player.y>game.config.height){
+                this.slide.setLoop(false);
+                this.slide.stop();
                 this.player.body.setVelocityY(0);
                 this.player.angle = 0;
                 this.player.y = 450;
@@ -264,7 +289,8 @@ class Play extends Phaser.Scene {
             }
 
             //when player health reaches 0 or off screen end the game
-            if(this.p1Health <= 0||this.player.x<-50){
+            if(this.p1Health <= 0||this.player.x<-30){
+                this.slide.setLoop(false);
                 this.gameOver = true;
             }
         }  
