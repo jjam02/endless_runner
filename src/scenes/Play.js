@@ -174,15 +174,14 @@ class Play extends Phaser.Scene {
         this.scoreRight = this.add.text(10, 10, "Distance: "+this.score+" mi", textConfig).setOrigin(0);
         this.time.addEvent({ delay: 2500, callback: this.miles, callbackScope: this, loop: true });
 
-        if(highScore>=0){
-            this.highScoreShadow = this.add.text(game.config.width-8, 12, "High Score: "+highScore+" mi", dropshadow).setOrigin(1,0);
-            this.highScoreDisplay = this.add.text(game.config.width-10, 10, "High Score: "+highScore+" mi", textConfig).setOrigin(1,0);
+        this.highScoreShadow = this.add.text(game.config.width-8, 12, "High Score: "+highScore+" mi", dropshadow).setOrigin(1,0);
+        this.highScoreDisplay = this.add.text(game.config.width-10, 10, "High Score: "+highScore+" mi", textConfig).setOrigin(1,0);
 
         // powerup spawn
         this.time.addEvent({ delay: 10000, callback: this.shieldSpawn, callbackScope: this, loop: true });
-        }
-       // this.bgm.setLoop(true);
-        //this.bgm.play();
+
+        // this.bgm.setLoop(true);
+        // this.bgm.play();
 
         this.nighttime = this.time.delayedCall(15000, () => {
             this.player.setDepth(1);

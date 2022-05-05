@@ -1,10 +1,7 @@
-
-
 // tame the javashrek
 'use strict';
 
 // global variables
-let keyLeft;
 let keySPACE;
 let keyDOWN;
 let highScore = 0;
@@ -27,9 +24,7 @@ let config = {
             }
         }
     },
-    scene: [Menu, Play, Credits]
+    scene: [Menu, Play, Credits, Controls]
 };
 
 let game = new Phaser.Game(config);
-
-
