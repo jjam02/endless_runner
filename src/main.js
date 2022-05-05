@@ -4,6 +4,8 @@
 // global variables
 let keySPACE;
 let keyDOWN;
+let keyLEFT;
+let keyRIGHT;
 let highScore = 0;
 let currentScene = 0;
 const SCALE = 0.5;

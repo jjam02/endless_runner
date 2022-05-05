@@ -23,6 +23,8 @@ class Play extends Phaser.Scene {
         //this.bgm = this.sound.add('music');
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         
         // set some constants
         this.JUMP_VELOCITY = -700;
@@ -39,6 +41,7 @@ class Play extends Phaser.Scene {
 
         // create player
         this.player = this.physics.add.sprite(50, 450,  'player').setOrigin(.5,.5);
+        this.player.body.allowGravity = true;
 
         // create shield on player
         this.trash = this.add.rectangle(50,450,20,20,'yellow');
@@ -136,7 +139,6 @@ class Play extends Phaser.Scene {
 
         // game over variable 
         this.gameOver = false;
-        
 
         // starting vel for enemy objs
         this.car.body.setVelocityX(-300);
@@ -167,15 +169,18 @@ class Play extends Phaser.Scene {
             fixedWidth: 0
         }
         
-
         // SCORING
         this.score = 0;
         this.scoreRightDropshadow = this.add.text(12, 12, "Distance: "+this.score+" mi", dropshadow).setOrigin(0);
         this.scoreRight = this.add.text(10, 10, "Distance: "+this.score+" mi", textConfig).setOrigin(0);
-        this.time.addEvent({ delay: 2500, callback: this.miles, callbackScope: this, loop: true });
+
+        this.time.addEvent({ delay: 500, callback: this.miles, callbackScope: this, loop: true });
 
         this.highScoreShadow = this.add.text(game.config.width-8, 12, "High Score: "+highScore+" mi", dropshadow).setOrigin(1,0);
         this.highScoreDisplay = this.add.text(game.config.width-10, 10, "High Score: "+highScore+" mi", textConfig).setOrigin(1,0);
+
+        this.gameOverDisplay = this.add.text(game.config.width/2 + 2, game.config.height/2 + 2, '', dropshadow).setOrigin(0.5);
+        this.gameOverShadow = this.add.text(game.config.width/2, game.config.height/2, '', textConfig).setOrigin(0.5);
 
         // powerup spawn
         this.time.addEvent({ delay: 10000, callback: this.shieldSpawn, callbackScope: this, loop: true });
@@ -184,23 +189,29 @@ class Play extends Phaser.Scene {
         // this.bgm.play();
 
         this.nighttime = this.time.delayedCall(15000, () => {
-            this.player.setDepth(1);
-            this.meteor.setDepth(1);
-            this.car.setDepth(1);
-            this.hood.setDepth(1);
-            this.shield.setDepth(1);
-            this.trash.setDepth(1);
-            this.scoreRightDropshadow.setDepth(1);
-            this.scoreRight.setDepth(1);
-            this.highScoreShadow.setDepth(1);
-            this.highScoreDisplay.setDepth(1);
-            this.cityscape.setDepth(0);
-            this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city2').setOrigin(0);
-            this.cityscape.setDepth(0);
-            this.SCROLL_SPEED +=5;
-            this.SPEED_MULT = 1.5;
-            }, null, this);
-            this.state="behind"
+            if (!this.gameOver) {
+                this.player.setDepth(1);
+                this.meteor.setDepth(1);
+                this.car.setDepth(1);
+                this.hood.setDepth(1);
+                this.shield.setDepth(1);
+                this.trash.setDepth(1);
+                this.scoreRightDropshadow.setDepth(1);
+                this.scoreRight.setDepth(1);
+                this.highScoreShadow.setDepth(1);
+                this.highScoreDisplay.setDepth(1);
+                this.gameOverDisplay.setDepth(1);
+                this.gameOverShadow.setDepth(1);
+                this.cityscape.setDepth(0);
+                this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city2').setOrigin(0);
+                this.cityscape.setDepth(0);
+                this.SCROLL_SPEED +=5;
+                this.SPEED_MULT = 1.5;
+            }
+        }, null, this);
+
+        this.state="behind";
+        
 
     }
 
@@ -211,12 +222,30 @@ class Play extends Phaser.Scene {
 
         // game ending handling
         if(this.gameOver){
-            //this.bgm.setLoop(false);
-        //this.bgm.stop();
+            // this.bgm.setLoop(false);
+            // this.bgm.stop();
+            this.car.body.setVelocityX(0);
+            this.hood.body.setVelocityX(0);
+            this.meteor.body.setVelocityX(0);
+            this.shield.body.setVelocityX(0);
+            this.player.body.allowGravity = false;
+            this.player.body.setVelocityX(0);
+            this.player.body.setVelocityY(0);
             if(this.score>highScore){
-                highScore = this.score;
+                highScore = Phaser.Math.RoundTo(this.score, -1);
             }
-            this.scene.start('menuScene');
+            this.gameOverDisplay.text = 'Game Over\nLEFT to Retry, RIGHT to Menu';
+            this.gameOverShadow.text = 'Game Over\nLEFT to Retry, RIGHT to Menu';
+
+            if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+                this.sound.play('select');
+                this.scene.restart();
+            }
+            else if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+                this.sound.play('select');
+                this.scene.start('menuScene');
+            }
+            
         }
 
 
@@ -351,15 +380,17 @@ class Play extends Phaser.Scene {
 
     // updates the score 
     miles(){
-        this.score +=.5;
-        this.scoreRight.text = "Distance: "+this.score + " mi";
-        this.scoreRightDropshadow.text = "Distance: "+this.score + " mi";
+        if (!this.gameOver) {
+            this.score += 0.1;
+            this.scoreRight.text = "Distance: "+ Phaser.Math.RoundTo(this.score, -1) + " mi";
+            this.scoreRightDropshadow.text = "Distance: "+ Phaser.Math.RoundTo(this.score, -1) + " mi";
+        }
     }
 
 
     // spawn the shield
     shieldSpawn(){
-        if(this.p1Health==1&&this.shield.x<0){
+        if(this.p1Health==1&&this.shield.x<0 && !this.gameOver){
             this.shield.x = game.config.width + 50;
             this.shield.y =  Math.random()*(455-380)+380
             this.shield.body.setVelocityX(-200);
