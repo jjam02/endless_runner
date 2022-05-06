@@ -16,6 +16,7 @@ let config = {
     type: Phaser.WEBGL,
     width: 840,
     height: 525,
+    autoCenter: true,
     physics: {
         default: 'arcade',
         arcade: {
