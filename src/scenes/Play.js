@@ -40,7 +40,7 @@ class Play extends Phaser.Scene {
         this.enemy = this.add.group();
 
         // create player
-        this.player = this.physics.add.sprite(50, 450,  'player').setOrigin(.5,.5);
+        this.player = this.physics.add.sprite(50, 450, 'player').setOrigin(.5,.5);
         this.player.body.allowGravity = true;
 
         // create shield on player
@@ -51,6 +51,10 @@ class Play extends Phaser.Scene {
         this.shield = this.physics.add.sprite(-50, 200 ,  'shield').setOrigin(0);
         this.shield.body.allowGravity = false;
         this.power.add(this.shield);
+
+        // top border for text
+        this.border = this.add.rectangle(0, 0, game.config.width, 75, '0x3F48CC').setOrigin(0);
+        this.border.alpha = 0;
 
         // player health
         this.p1Health = 1;
@@ -196,6 +200,8 @@ class Play extends Phaser.Scene {
                 this.hood.setDepth(1);
                 this.shield.setDepth(1);
                 this.trash.setDepth(1);
+                this.border.alpha = 1;
+                this.border.setDepth(1);
                 this.scoreRightDropshadow.setDepth(1);
                 this.scoreRight.setDepth(1);
                 this.highScoreShadow.setDepth(1);
