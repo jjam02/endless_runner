@@ -68,6 +68,7 @@ class Controls extends Phaser.Scene {
         // creating each controls page
         this.playerPage1 = this.add.sprite(game.config.width/2 - 100, game.config.height/2 + 30, 'player').setOrigin(0.5);
         this.carPage1 = this.add.sprite(game.config.width/2 + 100, game.config.height/2 + 105, 'car').setOrigin(0.5);
+        this.meteorPage1 = this.add.sprite(game.config.width/2, game.config.height/2 + 105, 'meteor').setOrigin(0.5);
 
         this.playerPage2 = this.add.sprite(game.config.width/2 - 100, game.config.height/2 + 100, 'player').setOrigin(0.5);
         this.playerPage2.angle = 90;
@@ -94,6 +95,7 @@ class Controls extends Phaser.Scene {
 
         this.playerPage1.alpha = 0;
         this.carPage1.alpha = 0;
+        this.meteorPage1.alpha = 0;
         this.playerPage2.alpha = 0;
         this.meteorPage2.alpha = 0;
         this.shieldPage3.alpha = 0;
@@ -108,6 +110,7 @@ class Controls extends Phaser.Scene {
                 this.controlsTextShadow.text = 'Use SPACE to jump.';
                 this.playerPage1.alpha = 1;
                 this.carPage1.alpha = 1;
+                this.meteorPage1.alpha = 1;
                 break;
             case 2:
                 this.controlsText.text = 'Use DOWN to duck.';
