@@ -24,6 +24,7 @@ class Menu extends Phaser.Scene {
                 top: 5,
                 bottom: 5,
             },
+            lineSpacing: 10,
             fixedWidth: 0
         }
         let dropshadow = {
@@ -35,6 +36,7 @@ class Menu extends Phaser.Scene {
                 top: 5,
                 bottom: 5,
             },
+            lineSpacing: 10,
             fixedWidth: 0
         }
         this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city').setOrigin(0);
@@ -43,28 +45,31 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width/2 + 4, game.config.height/4 + 4, 'RunPocalypse', dropshadow).setOrigin(0.5);
         dropshadow.fontSize = '40px';
         dropshadow.color = '#505050';
-        this.add.text(game.config.width/2 + 2, game.config.height/1.5 + 2, 'Press SPACE to start', dropshadow).setOrigin(0.5);
-        this.add.text(game.config.width/2 + 2, game.config.height/1.3 + 2, 'Press DOWN for Credits', dropshadow).setOrigin(0.5);
+        this.add.text(game.config.width/2 + 2, game.config.height/1.5 + 2, 'Press SPACE to Play\nPress DOWN for Credits\nPress LEFT for Controls', dropshadow).setOrigin(0.5);
 
         this.add.text(game.config.width/2, game.config.height/4, 'RunPocalypse', menuConfig).setOrigin(0.5);
         menuConfig.fontSize = '40px';
         menuConfig.color = '#000000';
-        this.add.text(game.config.width/2, game.config.height/1.5, 'Press SPACE to start', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/1.3, 'Press DOWN for Credits', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/1.5, 'Press SPACE to Play\nPress DOWN for Credits\nPress LEFT for Controls', menuConfig).setOrigin(0.5);
 
         // define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
     }
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.sound.play('select');
-            this.scene.start('controlsScene');    
+            this.scene.start('playScene');    
         }
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
             this.sound.play('select');
             this.scene.start('creditsScene');
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.sound.play('select');
+            this.scene.start('controlsScene');    
         }
 
     }

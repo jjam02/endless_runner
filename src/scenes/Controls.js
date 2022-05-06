@@ -53,8 +53,8 @@ class Controls extends Phaser.Scene {
         this.pageNum = this.add.text(game.config.width/2, game.config.height/2 + 178, 'Page X / Y', textConfig).setOrigin(0.5);
 
         textConfig.color = '#ffffff';
-        this.add.text(game.config.width/2+2, game.config.height+2, 'LEFT / RIGHT to Navigate, SPACE to Play', dropshadow).setOrigin(0.5,1);
-        this.add.text(game.config.width/2, game.config.height, 'LEFT / RIGHT to Navigate, SPACE to Play', textConfig).setOrigin(0.5,1);
+        this.add.text(game.config.width/2+2, game.config.height+2, 'LEFT / RIGHT to Navigate, SPACE for Menu', dropshadow).setOrigin(0.5,1);
+        this.add.text(game.config.width/2, game.config.height, 'LEFT / RIGHT to Navigate, SPACE for Menu', textConfig).setOrigin(0.5,1);
 
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -86,7 +86,7 @@ class Controls extends Phaser.Scene {
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.sfx_select.play();
-            this.scene.start('playScene');    
+            this.scene.start('menuScene');    
         }
 
         this.pageNum.text = 'Page ' + this.page + ' / ' + this.maxPage;
