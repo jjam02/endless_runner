@@ -20,7 +20,7 @@ class Play extends Phaser.Scene {
         this.shield_off = this.sound.add('off');
         this.duck = this.sound.add('duck');
         this.slide = this.sound.add('slide');
-        //this.bgm = this.sound.add('music');
+        this.bgm = this.sound.add('bgm');
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -189,8 +189,8 @@ class Play extends Phaser.Scene {
         // powerup spawn
         this.time.addEvent({ delay: 10000, callback: this.shieldSpawn, callbackScope: this, loop: true });
 
-        // this.bgm.setLoop(true);
-        // this.bgm.play();
+        this.bgm.setLoop(true);
+        this.bgm.play();
 
         this.nighttime = this.time.delayedCall(15000, () => {
             if (!this.gameOver) {
@@ -228,8 +228,8 @@ class Play extends Phaser.Scene {
 
         // game ending handling
         if(this.gameOver){
-            // this.bgm.setLoop(false);
-            // this.bgm.stop();
+            this.bgm.setLoop(false);
+            this.bgm.stop();
             this.car.body.setVelocityX(0);
             this.hood.body.setVelocityX(0);
             this.meteor.body.setVelocityX(0);

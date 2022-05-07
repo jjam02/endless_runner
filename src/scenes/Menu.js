@@ -11,7 +11,8 @@ class Menu extends Phaser.Scene {
         this.load.audio('select', './assets/select.wav');
         this.load.audio('duck', './assets/duck.wav');
         this.load.audio('slide', './assets/sliding.wav');
-        this.load.audio('music', './assets/among_drip.wav');
+        this.load.audio('bgm', './assets/Play.wav');
+        this.load.audio('menuMusic', './assets/Menu.wav');
         this.load.audio('off', './assets/shield_hit.wav');
     }
     create() {
@@ -56,20 +57,31 @@ class Menu extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+
+        this.menuMusic = this.sound.add('menuMusic');
+
+        this.menuMusic.setLoop(true);
+        this.menuMusic.play();
     }
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.sound.play('select');
-            this.scene.start('playScene');    
+            this.scene.start('playScene');
+            this.menuMusic.setLoop(false);
+            this.menuMusic.stop();  
         }
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
             this.sound.play('select');
             this.scene.start('creditsScene');
+            this.menuMusic.setLoop(false);
+            this.menuMusic.stop();  
         }
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.sound.play('select');
-            this.scene.start('controlsScene');    
+            this.scene.start('controlsScene');
+            this.menuMusic.setLoop(false);
+            this.menuMusic.stop();  
         }
 
     }
