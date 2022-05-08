@@ -14,6 +14,7 @@ class Menu extends Phaser.Scene {
         this.load.audio('bgm', './assets/Play.wav');
         this.load.audio('menuMusic', './assets/Menu.wav');
         this.load.audio('off', './assets/shield_hit.wav');
+        this.load.audio('wind', './assets/wind.wav');
     }
     create() {
         let menuConfig = {
@@ -66,22 +67,22 @@ class Menu extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+            this.menuMusic.setLoop(false);
+            this.menuMusic.stop();  
             this.sound.play('select');
             this.scene.start('playScene');
-            this.menuMusic.setLoop(false);
-            this.menuMusic.stop();  
         }
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+            this.menuMusic.setLoop(false);
+            this.menuMusic.stop();  
             this.sound.play('select');
             this.scene.start('creditsScene');
-            this.menuMusic.setLoop(false);
-            this.menuMusic.stop();  
         }
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.menuMusic.setLoop(false);
+            this.menuMusic.stop(); 
             this.sound.play('select');
             this.scene.start('controlsScene');
-            this.menuMusic.setLoop(false);
-            this.menuMusic.stop();  
         }
 
     }

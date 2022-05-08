@@ -81,12 +81,20 @@ class Controls extends Phaser.Scene {
 
         this.playerPage5 = this.add.sprite(game.config.width/2, game.config.height/2 + 10, 'player').setOrigin(0.5);
         this.meteorPage5 = this.add.sprite(game.config.width/2, game.config.height/2 + 60, 'meteor').setOrigin(0.5);
-        
+
+        this.wind = this.sound.add('wind');
+        this.wind.play();
+
+        this.time.addEvent({ delay: 6000, callback: () => {
+            this.wind.play();
+        }, callbackScope: this, loop: true });
     }
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.sfx_select.play();
+            this.wind.stop();
+            this.scene.start('menuScene'); 
             this.scene.start('menuScene');    
         }
 

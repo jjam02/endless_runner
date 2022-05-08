@@ -54,11 +54,21 @@ class Credits extends Phaser.Scene {
         this.add.text(game.config.width/2, game.config.height, 'Press SPACE for Menu', textConfig).setOrigin(0.5,1);
 
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+        this.wind = this.sound.add('wind');
+        this.wind.setLoop(false);
+
+        this.wind.play();
+
+        this.time.addEvent({ delay: 6000, callback: () => {
+            this.wind.play();
+        }, callbackScope: this, loop: true });
     }
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.sfx_select.play();
+            this.wind.stop();
             this.scene.start('menuScene');    
         }
     }

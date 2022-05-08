@@ -13,7 +13,8 @@ class Play extends Phaser.Scene {
        
     }
 
-    create() { // define keys
+    create() { 
+        // add sfx / music
         this.jump_sound = this.sound.add('jump');
         this.hit = this.sound.add('hit');
         this.shield_get = this.sound.add('shield');
@@ -21,19 +22,23 @@ class Play extends Phaser.Scene {
         this.duck = this.sound.add('duck');
         this.slide = this.sound.add('slide');
         this.bgm = this.sound.add('bgm');
+
+        // define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         
-        // set some constants
+        // set some variables
         this.JUMP_VELOCITY = -700;
-        this.SCROLL_SPEED = 5;
-        this.SPEED_MULT = 1;
-        this.physics.world.gravity.y = 2600; 
+        this.scrollSpeed = 5;
+        this.speedMult = 1;
+        this.physics.world.gravity.y = 2600;
+        this.state = "behind";                  // state of player's x position
 
         // background
         this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city').setOrigin(0);
+
         // make collision groups
         this.ground = this.add.group();
         this.power = this.add.group();
@@ -48,7 +53,7 @@ class Play extends Phaser.Scene {
         this.trash.alpha= 0;
 
         // make shield item
-        this.shield = this.physics.add.sprite(-50, 200 ,  'shield').setOrigin(0);
+        this.shield = this.physics.add.sprite(-50, 200 , 'shield').setOrigin(0);
         this.shield.body.allowGravity = false;
         this.power.add(this.shield);
 
@@ -94,8 +99,6 @@ class Play extends Phaser.Scene {
         this.enemy.add(this.car);
         this.enemy.add(this.meteor);
         this.meteors.add(this.meteor)
-        
-        
         
         // add physics collider
         this.physics.add.collider(this.player, this.ground);
@@ -183,15 +186,18 @@ class Play extends Phaser.Scene {
         this.highScoreShadow = this.add.text(game.config.width-8, 12, "High Score: "+highScore+" mi", dropshadow).setOrigin(1,0);
         this.highScoreDisplay = this.add.text(game.config.width-10, 10, "High Score: "+highScore+" mi", textConfig).setOrigin(1,0);
 
+        // game over text setup
         this.gameOverDisplay = this.add.text(game.config.width/2 + 2, game.config.height/2 + 2, '', dropshadow).setOrigin(0.5);
         this.gameOverShadow = this.add.text(game.config.width/2, game.config.height/2, '', textConfig).setOrigin(0.5);
 
         // powerup spawn
         this.time.addEvent({ delay: 10000, callback: this.shieldSpawn, callbackScope: this, loop: true });
 
+        // play bgm
         this.bgm.setLoop(true);
         this.bgm.play();
 
+        // difficulty increase after 15 sec
         this.nighttime = this.time.delayedCall(15000, () => {
             if (!this.gameOver) {
                 this.player.setDepth(1);
@@ -211,25 +217,25 @@ class Play extends Phaser.Scene {
                 this.cityscape.setDepth(0);
                 this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city2').setOrigin(0);
                 this.cityscape.setDepth(0);
-                this.SCROLL_SPEED +=5;
-                this.SPEED_MULT = 1.5;
+                this.scrollSpeed +=3;
+                this.speedMult = 1.5;
             }
         }, null, this);
-
-        this.state="behind";
-        
 
     }
 
         
     update() {
-        console.log("Player X \: "+this.player.x);
+        // console.log("Player X \: "+this.player.x);
         // update tile sprites (tweak for more "speed")
 
         // game ending handling
         if(this.gameOver){
+            // stop bgm
             this.bgm.setLoop(false);
             this.bgm.stop();
+
+            // freeze all arcade sprites
             this.car.body.setVelocityX(0);
             this.hood.body.setVelocityX(0);
             this.meteor.body.setVelocityX(0);
@@ -237,9 +243,13 @@ class Play extends Phaser.Scene {
             this.player.body.allowGravity = false;
             this.player.body.setVelocityX(0);
             this.player.body.setVelocityY(0);
-            if(this.score>highScore){
+
+            // update high score
+            if (this.score>highScore) {
                 highScore = Phaser.Math.RoundTo(this.score, -1);
             }
+
+            // display game over text
             this.gameOverDisplay.text = 'Game Over\nLEFT to Retry, RIGHT to Menu';
             this.gameOverShadow.text = 'Game Over\nLEFT to Retry, RIGHT to Menu';
 
@@ -258,20 +268,18 @@ class Play extends Phaser.Scene {
         // what to do in game runtime
         if(!this.gameOver){
                 
-            //make bg scroll
-            this.cityscape.tilePositionX += this.SCROLL_SPEED; 
-            //this.groundTile += this.SCROLL_SPEED;
+            // make bg scroll
+            this.cityscape.tilePositionX += this.scrollSpeed;
 
-            //check for player touching ground
+            // check for player touching ground
             this.player.onGround = this.player.body.touching.down;
 
-            // FIXME: player position can exceed 50 if ducking while velocity.x > 0
-
+            // tracking player x position
             if(this.player.x<50){
                 this.state = "behind";
             
             }else if(this.player.x>70){
-               this.state = "ahead";
+                this.state = "ahead";
             }
             else{
                 this.state = "zone";
@@ -279,12 +287,10 @@ class Play extends Phaser.Scene {
             
             if(this.player.onGround){
                 this.jump = 1;
-                this.jumping=false;
-                
-                
-            
+                this.jumping = false;
             }
-            console.log("PLAYER STATE "+this.state)
+
+            // console.log("PLAYER STATE "+this.state)
             switch(this.state){
                 case "behind":
                     this.player.body.velocity.x =20;
@@ -294,7 +300,7 @@ class Play extends Phaser.Scene {
                     break;
                 case "zone":
                     this.player.body.velocity.x = 0;
-
+                    break;
             }
           
             
@@ -325,12 +331,13 @@ class Play extends Phaser.Scene {
                 this.meteor_reset();
             }
             
+            // increase meteor speed if nearby
             if((this.meteor.tilePositionX-this.car.tilePositionX)>-100||(this.car.tilePositionX-this.meteor.tilePositionX)>-100){
                 this.meteor.body.velocity.x+=30;
             }
 
             // controlling the sliding
-            if(keyDOWN.isDown){
+            if (keyDOWN.isDown){
                 if(Phaser.Input.Keyboard.JustDown(keyDOWN)){
                    this.duck.play(); 
                 this.slide.setLoop(true);
@@ -360,21 +367,18 @@ class Play extends Phaser.Scene {
 
             }
 
-
             //console.log("X"+this.player.x+" Y "+this.player.y);
             //console.log(this.car.body.velocity.x);
             // console.log("shield: "+this.shield.body.velocity.x);
             // console.log("player health: "+this.p1Health);
             
-
-            // take of shield if player is hit
+            // put shield sprite on player
             if(this.p1Health>1){
                 this.trash.x = this.player.x;
                 this.trash.y = this.player.y;
-
             }
 
-            //when player health reaches 0 or off screen end the game
+            // when player health reaches 0 or off screen, end the game
             if(this.p1Health <= 0||this.player.x<-30){
                 this.slide.setLoop(false);
                 this.gameOver = true;
@@ -410,9 +414,9 @@ class Play extends Phaser.Scene {
         this.meteor.destroy();
         this.meteor =  this.physics.add.sprite(game.config.width, Math.random()*(425-380)+380,  'meteor').setOrigin(0);
         this.meteor.body.allowGravity = false;
-        this.meteor.x = game.config.width+50;
+        this.meteor.x = game.config.width+(Math.random()*(300-25)+25);
         this.meteor.setVelocityY(0);
-        this.meteor.setVelocityX((-1*((Math.random()*(500-400)+400)))*this.SPEED_MULT);
+        this.meteor.setVelocityX((-1*((Math.random()*(500-400)+400)))*this.speedMult);
         this.meteor.y = Math.random()*(425-380)+380;
         this.meteors.add(this.meteor);
 
@@ -421,8 +425,8 @@ class Play extends Phaser.Scene {
 
     //reset the car
     car_reset(){
-        this.car.x = game.config.width+50;
-        this.num = (-1*((Math.random()*(500-300)+300)))*this.SPEED_MULT;
+        this.car.x = game.config.width+(Math.random()*(200-25)+25);
+        this.num = (-1*((Math.random()*(500-300)+300)))*this.speedMult;
         this.car.body.setVelocityX(this.num);
         this.hood.x = this.car.x+30;
         this.hood.body.setVelocityX(this.num);
