@@ -63,6 +63,7 @@ class Credits extends Phaser.Scene {
         this.time.addEvent({ delay: 6000, callback: () => {
             this.wind.play();
         }, callbackScope: this, loop: true });
+        
     }
 
     update() {

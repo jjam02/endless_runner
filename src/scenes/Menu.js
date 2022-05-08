@@ -58,29 +58,27 @@ class Menu extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-
-        this.menuMusic = this.sound.add('menuMusic');
-
-        this.menuMusic.setLoop(true);
-        this.menuMusic.play();
+        menuMusic = this.sound.add('menuMusic');
+        if(!isPlayerMenu){
+        menuMusic.setLoop(true);
+        menuMusic.play();
+        isPlayerMenu = true;
+        }
     }
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-            this.menuMusic.setLoop(false);
-            this.menuMusic.stop();  
+            menuMusic.setLoop(false);
+            menuMusic.stop();  
+            isPlayerMenu = false;
             this.sound.play('select');
             this.scene.start('playScene');
         }
-        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-            this.menuMusic.setLoop(false);
-            this.menuMusic.stop();  
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) { 
             this.sound.play('select');
             this.scene.start('creditsScene');
         }
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-            this.menuMusic.setLoop(false);
-            this.menuMusic.stop(); 
             this.sound.play('select');
             this.scene.start('controlsScene');
         }

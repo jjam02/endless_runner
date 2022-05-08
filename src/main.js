@@ -8,6 +8,8 @@ let keyLEFT;
 let keyRIGHT;
 let highScore = 0;
 let currentScene = 0;
+let menuMusic = 0;
+let isPlayerMenu = false;
 const SCALE = 0.5;
 const tileSize = 35;
 
