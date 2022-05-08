@@ -100,17 +100,16 @@ class Play extends Phaser.Scene {
         // add physics collider
         this.physics.add.collider(this.player, this.ground);
         this.physics.add.collider(this.car, this.ground);
-        this.physics.add.collider(this.shield, this.player, ()=>{
+        this.shield_col = this.physics.add.collider(this.shield, this.player, ()=>{
             this.shield_get.play();
             this.trash.alpha= 1;
-            this.player.setVelocityX(0);
-            this.player.setVelocityY(0);
             this.shield.x = -50;
             this.shield.y = 200;
             this.p1Health++;
             this.shield.body.setVelocityX(0);
             this.shield.body.setVelocityY(0);
         });
+        this.shield_col.overlapOnly = true;
         this.physics.add.collider(this.car,  this.player, ()=>{
             this.trash.alpha= 0;
             this.car_reset();
