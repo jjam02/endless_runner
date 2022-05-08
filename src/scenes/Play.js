@@ -14,6 +14,7 @@ class Play extends Phaser.Scene {
     }
 
     create() { 
+        
         // add sfx / music
         this.jump_sound = this.sound.add('jump');
         this.hit = this.sound.add('hit');
