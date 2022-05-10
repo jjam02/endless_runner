@@ -10,6 +10,7 @@ class Play extends Phaser.Scene {
         this.load.image('car','./assets/van_1.png')
         this.load.image('meteor','./assets/meteor.png')
         this.load.image('shield','./assets/shield.png')
+        this.load.atlas('player_atlas', './assets/playersheet.png', './assets/playermap.json');
        
     }
 
@@ -49,11 +50,10 @@ class Play extends Phaser.Scene {
 
         // make collision groups
         this.ground = this.add.group();
-        this.power = this.add.group();
         this.enemy = this.add.group();
 
         // create player
-        this.player = this.physics.add.sprite(50, 450, 'player').setOrigin(.5,.5);
+        this.player = this.physics.add.sprite(100, 450, 'player_atlas', 'run_0001').setOrigin(.5,.5);
         this.player.body.allowGravity = true;
 
         // create shield on player
@@ -63,7 +63,6 @@ class Play extends Phaser.Scene {
         // make shield item
         this.shield = this.physics.add.sprite(-50, 200 , 'shield').setOrigin(0);
         this.shield.body.allowGravity = false;
-        this.power.add(this.shield);
 
         // top border for text
         this.border = this.add.rectangle(0, 0, game.config.width, 75, '0x3F48CC').setOrigin(0);
@@ -75,7 +74,7 @@ class Play extends Phaser.Scene {
         // make ground tiles
         for(let i = 0; i < game.config.width; i += tileSize) { 
             let groundTile = this.physics.add.sprite(i, game.config.height - tileSize,  'floor').setScale(SCALE).setOrigin(0);
-            let groundTile2 = this.physics.add.sprite(i, game.config.height - tileSize+10,  'floor').setScale(SCALE).setOrigin(0);
+            let groundTile2 = this.physics.add.sprite(i, game.config.height - tileSize+16,  'floor').setScale(SCALE).setOrigin(0);
             groundTile.body.immovable = true;
             groundTile.body.allowGravity = false;
             groundTile2.body.immovable = true;
@@ -88,11 +87,12 @@ class Play extends Phaser.Scene {
         
 
         // car obj
-        this.car = this.physics.add.sprite(game.config.width, game.config.height - 70 ,  'car').setOrigin(0.5);
+        this.car = this.physics.add.sprite(game.config.width, game.config.height - 66 ,  'car').setOrigin(0.5);
         this.car.setScale(this.CAR_SCALE, this.CAR_SCALE);
-        this.hood = this.physics.add.sprite(game.config.width, game.config.height - 110 , 'car').setOrigin(0.5);
+        this.car.setSize(this.car.width-10, this.car.height/2);
+        this.hood = this.physics.add.sprite(game.config.width, game.config.height - 96 , 'car').setOrigin(0.5);
         this.hood.alpha = 0;
-        this.hood.setSize(this.car.width * this.CAR_SCALE, 40);
+        this.hood.setSize(this.car.width * this.CAR_SCALE - 20, 40);
         this.hood.setDisplaySize(this.car.width, 40);
         this.car.body.allowGravity = false;
         this.hood.body.allowGravity = false;
@@ -128,7 +128,7 @@ class Play extends Phaser.Scene {
             this.shield.body.setVelocityY(0);
         });
         this.shield_col.overlapOnly = true;
-        this.physics.add.collider(this.car,  this.player, ()=>{
+        this.physics.add.collider(this.car, this.player, ()=>{
             this.trash.alpha= 0;
             this.car_reset();
             if(this.p1Health>1){
@@ -136,8 +136,8 @@ class Play extends Phaser.Scene {
             }else{
                 this.hit.play();  
             }
-            this.player.setVelocityX(0);
-            this.player.setVelocityY(0);
+            // this.player.setVelocityX(0);
+            // this.player.setVelocityY(0);
             if(this.p1Health==2){
                 this.p1Health = 1;
             }else if(this.p1Health == 1){
@@ -153,14 +153,15 @@ class Play extends Phaser.Scene {
                 this.hit.play();  
             }
             
-            this.player.setVelocityX(0);
-            this.player.setVelocityY(0);
+            // this.player.setVelocityX(0);
+            // this.player.setVelocityY(0);
             if(this.p1Health==2){
                 this.p1Health = 1;
             }else if(this.p1Health == 1){
                 this.p1Health = 0;
             }
         });
+        
         this.physics.add.collider(this.player, this.hood, ()=>{
             this.player.body.setVelocityY(0);
             this.player.body.setVelocityX(-1*this.hood.body.velocity.x+300);
@@ -219,6 +220,33 @@ class Play extends Phaser.Scene {
         this.bgm.setLoop(true);
         this.bgm.play();
 
+        // player animations
+        this.anims.create({
+            key: 'run',
+            frames: this.anims.generateFrameNames('player_atlas', {
+                prefix: 'run_',
+                start: 1,
+                end: 8,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 15,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'duck',
+            frames: this.anims.generateFrameNames('player_atlas', {
+                prefix: 'duck_',
+                start: 1,
+                end: 5,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 15,
+            repeat: -1
+        });
+
         // difficulty increase after 15 sec
         this.nighttime = this.time.delayedCall(15000, () => {
             if (!this.gameOver) {
@@ -240,7 +268,7 @@ class Play extends Phaser.Scene {
                 this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city2').setOrigin(0);
                 this.cityscape.setDepth(0);
                 this.scrollSpeed +=3;
-                this.speedMult = 1.5;
+                this.speedMult = 1.3;
             }
         }, null, this);
 
@@ -296,16 +324,19 @@ class Play extends Phaser.Scene {
 
             // check for player touching ground
             this.player.onGround = this.player.body.touching.down;
+            this.player.anims.play('run', true);
+            this.player.setSize(40,65);
+            this.player.setDisplaySize(45,70);
 
             // tracking player x position
-            if(this.player.x<50){
+            if(this.player.x<70){
                 this.state = "behind";
             
-            }else if(this.player.x>70){
+            }else if(this.player.x>100){
                 this.state = "ahead";
             }
             else{
-                this.state = "zone";
+                this.state = "zone"; // zone is [70, 100]
             }
             
             if(this.player.onGround){
@@ -362,14 +393,15 @@ class Play extends Phaser.Scene {
             // controlling the sliding
             if (keyDOWN.isDown){
                 if(Phaser.Input.Keyboard.JustDown(keyDOWN)){
-                   this.duck.play(); 
+                    this.player.anims.play('duck', true);
+                    this.duck.play(); 
                 this.slide.setLoop(true);
                 this.slide.play();
                 }
                 
-                this.player.angle = 90;
-                this.player.setSize(65,40);
-                this.player.setDisplaySize(45,70);
+                // this.player.angle = 90;
+                // this.player.setSize(65,40);
+                // this.player.setDisplaySize(45,70);
                 
                 if(!this.jumping){
                 // this.player.y = 467.5;
@@ -385,8 +417,8 @@ class Play extends Phaser.Scene {
                 this.player.body.setVelocityY(0);
                 this.player.angle = 0;
                 this.player.y = 450;
-                this.player.setSize(40,65);
-                this.player.setDisplaySize(45,70);
+                // this.player.setSize(40,65);
+                // this.player.setDisplaySize(45,70);
 
             }
 
@@ -435,7 +467,7 @@ class Play extends Phaser.Scene {
     // reset the meteor 
     meteor_reset(){
         this.meteor.destroy();
-        this.meteor =  this.physics.add.sprite(game.config.width, Math.random()*(425-380)+380,  'meteor').setOrigin(0);
+        this.meteor = this.physics.add.sprite(game.config.width, Math.random()*(425-380)+380,  'meteor').setOrigin(0);
         this.meteor.scale = this.METEOR_SCALE;
         this.meteor.setSize(200, 160);
         this.meteor.setOffset(-10, 100);
@@ -449,9 +481,9 @@ class Play extends Phaser.Scene {
     }
 
 
-    //reset the car
+    // reset the car
     car_reset(){
-        this.car.x = game.config.width+(Math.random()*(200-25)+25);
+        this.car.x = game.config.width+(Math.random()*(1000-25)+25);
         this.num = (-1*((Math.random()*(this.CAR_VEL_MAX - this.CAR_VEL_MIN) + this.CAR_VEL_MIN)))*this.speedMult;
         this.car.body.setVelocityX(this.num);
         this.hood.x = this.car.x;
