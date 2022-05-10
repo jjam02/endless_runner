@@ -7,7 +7,7 @@ class Play extends Phaser.Scene {
         this.load.image('city2', './assets/bg2.png');
         this.load.image('player','./assets/player.png')
         this.load.image('floor','./assets/floor.png')
-        this.load.image('car','./assets/car.png')
+        this.load.image('car','./assets/van_1.png')
         this.load.image('meteor','./assets/meteor.png')
         this.load.image('shield','./assets/shield.png')
        
@@ -36,6 +36,13 @@ class Play extends Phaser.Scene {
         this.speedMult = 1;
         this.physics.world.gravity.y = 2600;
         this.state = "behind";                  // state of player's x position
+        this.CAR_SCALE = 0.15;
+        this.CAR_VEL_MIN = 350;
+        this.CAR_VEL_MAX = 450;
+        this.METEOR_SCALE = 0.2;
+        this.METEOR_VEL_MIN = 650;
+        this.METEOR_VEL_MAX = 800;
+        
 
         // background
         this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city').setOrigin(0);
@@ -80,11 +87,13 @@ class Play extends Phaser.Scene {
         }
         
 
-        // create car obj
-        this.car = this.physics.add.sprite(game.config.width, 455 ,  'car').setOrigin(0);
-        this.hood = this.physics.add.sprite(game.config.width+30, 445 ,  'car').setOrigin(0.5,0.5);
-        this.hood.setSize(50,60);
-        this.hood.setDisplaySize(60,5);
+        // car obj
+        this.car = this.physics.add.sprite(game.config.width, game.config.height - 70 ,  'car').setOrigin(0.5);
+        this.car.setScale(this.CAR_SCALE, this.CAR_SCALE);
+        this.hood = this.physics.add.sprite(game.config.width, game.config.height - 110 , 'car').setOrigin(0.5);
+        this.hood.alpha = 0;
+        this.hood.setSize(this.car.width * this.CAR_SCALE, 40);
+        this.hood.setDisplaySize(this.car.width, 40);
         this.car.body.allowGravity = false;
         this.hood.body.allowGravity = false;
         this.hood.body.immovable = true;
@@ -93,6 +102,9 @@ class Play extends Phaser.Scene {
         // meteor obj
         this.meteor =  this.physics.add.sprite(game.config.width, Math.random()*(425-380)+380,  'meteor').setOrigin(0);
         this.meteor.body.allowGravity = false;
+        this.meteor.scale = this.METEOR_SCALE;
+        this.meteor.setSize(200, 160);
+        this.meteor.setOffset(-10, 100);
         
         // add enemies to group
         this.enemy = this.add.group();
@@ -158,9 +170,9 @@ class Play extends Phaser.Scene {
         this.gameOver = false;
 
         // starting vel for enemy objs
-        this.car.body.setVelocityX(-300);
-        this.hood.body.setVelocityX(-300);
-        this.meteor.body.setVelocityX(-400);
+        this.car.body.setVelocityX(-this.CAR_VEL_MIN);
+        this.hood.body.setVelocityX(-this.CAR_VEL_MIN);
+        this.meteor.body.setVelocityX(-this.METEOR_VEL_MIN);
 
         // text config
         let textConfig = {
@@ -424,11 +436,14 @@ class Play extends Phaser.Scene {
     meteor_reset(){
         this.meteor.destroy();
         this.meteor =  this.physics.add.sprite(game.config.width, Math.random()*(425-380)+380,  'meteor').setOrigin(0);
+        this.meteor.scale = this.METEOR_SCALE;
+        this.meteor.setSize(200, 160);
+        this.meteor.setOffset(-10, 100);
         this.meteor.body.allowGravity = false;
         this.meteor.x = game.config.width+(Math.random()*(300-25)+25);
         this.meteor.setVelocityY(0);
-        this.meteor.setVelocityX((-1*((Math.random()*(500-400)+400)))*this.speedMult);
-        this.meteor.y = Math.random()*(425-380)+380;
+        this.meteor.setVelocityX((-1*((Math.random()*(this.METEOR_VEL_MAX - this.METEOR_VEL_MIN) + this.METEOR_VEL_MIN)))*this.speedMult);
+        this.meteor.y = Math.random()*(410-350)+350;
         this.meteors.add(this.meteor);
 
     }
@@ -437,9 +452,9 @@ class Play extends Phaser.Scene {
     //reset the car
     car_reset(){
         this.car.x = game.config.width+(Math.random()*(200-25)+25);
-        this.num = (-1*((Math.random()*(500-300)+300)))*this.speedMult;
+        this.num = (-1*((Math.random()*(this.CAR_VEL_MAX - this.CAR_VEL_MIN) + this.CAR_VEL_MIN)))*this.speedMult;
         this.car.body.setVelocityX(this.num);
-        this.hood.x = this.car.x+30;
+        this.hood.x = this.car.x;
         this.hood.body.setVelocityX(this.num);
 
     }

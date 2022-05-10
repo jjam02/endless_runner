@@ -7,7 +7,7 @@ class Controls extends Phaser.Scene {
         this.load.image('city', './assets/bg.png');
         this.load.image('player','./assets/player.png')
         this.load.image('floor','./assets/floor.png')
-        this.load.image('car','./assets/car.png')
+        this.load.image('car','./assets/van_1.png')
         this.load.image('meteor','./assets/meteor.png')
         this.load.image('shield','./assets/shield.png')
     }
@@ -68,7 +68,9 @@ class Controls extends Phaser.Scene {
         // creating each controls page
         this.playerPage1 = this.add.sprite(game.config.width/2 - 100, game.config.height/2 + 30, 'player').setOrigin(0.5);
         this.carPage1 = this.add.sprite(game.config.width/2 + 100, game.config.height/2 + 105, 'car').setOrigin(0.5);
+        
         this.meteorPage1 = this.add.sprite(game.config.width/2, game.config.height/2 + 105, 'meteor').setOrigin(0.5);
+        
 
         this.playerPage2 = this.add.sprite(game.config.width/2 - 100, game.config.height/2 + 100, 'player').setOrigin(0.5);
         this.playerPage2.angle = 90;
