@@ -9,7 +9,7 @@ class Play extends Phaser.Scene {
         this.load.image('car','./assets/van_1.png')
         this.load.image('meteor','./assets/meteor.png')
         this.load.image('shield','./assets/shield.png')
-        this.load.atlas('player_atlas', './assets/playersheet.png', './assets/playermap.json');
+        // this.load.atlas('player_atlas', './assets/playersheet.png', './assets/playermap.json');
         this.load.atlas('player_atlas2', './assets/playersheet2.png', './assets/playersheet2.json');
        
     }
@@ -67,8 +67,8 @@ class Play extends Phaser.Scene {
         this.shield.body.allowGravity = false;
 
         // top border for text
-        this.border = this.add.rectangle(0, 0, game.config.width, 75, '0x3F48CC').setOrigin(0);
-        this.border.alpha = 0;
+        // this.border = this.add.rectangle(0, 0, game.config.width, 75, '0x3F48CC').setOrigin(0);
+        // this.border.alpha = 0;
 
         // player health
         this.p1Health = 1;
@@ -178,6 +178,7 @@ class Play extends Phaser.Scene {
         
         this.physics.add.collider(this.player, this.hood, ()=>{
             this.player.body.setVelocityY(0);
+            this.onHood = true;
             // this.player.body.setVelocityX(-1*this.hood.body.velocity.x+300);
         });
 
@@ -236,18 +237,18 @@ class Play extends Phaser.Scene {
         this.bgm.play();
 
         // player animations
-        this.anims.create({
-            key: 'run',
-            frames: this.anims.generateFrameNames('player_atlas', {
-                prefix: 'run_',
-                start: 1,
-                end: 8,
-                suffix: '',
-                zeroPad: 4
-            }),
-            frameRate: 15,
-            repeat: -1
-        });
+        // this.anims.create({
+        //     key: 'run',
+        //     frames: this.anims.generateFrameNames('player_atlas', {
+        //         prefix: 'run_',
+        //         start: 1,
+        //         end: 8,
+        //         suffix: '',
+        //         zeroPad: 4
+        //     }),
+        //     frameRate: 15,
+        //     repeat: -1
+        // });
 
         this.anims.create({
             key: 'run2',
@@ -262,21 +263,21 @@ class Play extends Phaser.Scene {
             repeat: -1
         });
 
-        this.anims.create({
-            key: 'duck',
-            frames: this.anims.generateFrameNames('player_atlas', {
-                prefix: 'duck_',
-                start: 1,
-                end: 5,
-                suffix: '',
-                zeroPad: 4
-            }),
-            frameRate: 15,
-            repeat: -1
-        });
+        // this.anims.create({
+        //     key: 'duck',
+        //     frames: this.anims.generateFrameNames('player_atlas', {
+        //         prefix: 'duck_',
+        //         start: 1,
+        //         end: 5,
+        //         suffix: '',
+        //         zeroPad: 4
+        //     }),
+        //     frameRate: 15,
+        //     repeat: -1
+        // });
 
         // difficulty increase after 15 sec
-        this.nighttime = this.time.delayedCall(15000, () => {
+        this.nighttime = this.time.delayedCall(21500, () => {
             if (!this.gameOver) {
                 this.player.setDepth(1);
                 this.meteor.setDepth(1);
@@ -284,8 +285,8 @@ class Play extends Phaser.Scene {
                 this.hood.setDepth(1);
                 this.shield.setDepth(1);
                 this.trash.setDepth(1);
-                this.border.alpha = 1;
-                this.border.setDepth(1);
+                // this.border.alpha = 1;
+                // this.border.setDepth(1);
                 this.scoreRightDropshadow.setDepth(1);
                 this.scoreRight.setDepth(1);
                 this.highScoreShadow.setDepth(1);
@@ -302,10 +303,6 @@ class Play extends Phaser.Scene {
 
         
     update() {
-       
-        // console.log("Player X \: "+this.player.x);
-        // update tile sprites (tweak for more "speed")
-
         // game ending handling
         if(this.gameOver){
             // stop bgm
@@ -397,18 +394,17 @@ class Play extends Phaser.Scene {
                 this.state = "ahead";
             }
             else{
-                this.state = "zone"; // zone is [70, 100]
+                this.state = "zone"; // zone is [150, 200]
             }
             
             if(this.player.onGround){
                 this.jump = 1;
                 this.jumping = false;
             }
-
-            // console.log("PLAYER STATE "+this.state)
+            
             switch(this.state){
                 case "behind":
-                    this.player.body.velocity.x = 20;
+                    this.player.body.velocity.x = this.onHood ? 150 : 20;
                     break;
                 case "ahead":
                     this.player.body.velocity.x = -20;
@@ -417,18 +413,22 @@ class Play extends Phaser.Scene {
                     this.player.body.velocity.x = 0;
                     break;
             }
+
+            if (this.player.y > game.config.height - 30 && this.player.onGround) {
+                this.onHood = false;
+            }
+
+            // console.log(this.player.body.velocity.x);
           
             
 
             // jumping controller
             if(this.jump>0 && Phaser.Input.Keyboard.DownDuration(keySPACE,100)&&!keyDOWN.isDown) {
-                // console.log("I JUMPED POGGERS");
                 this.jump_sound.play();
                 this.player.body.setVelocityY(-800);
                 this.jumping=true;
             }
             if(this.jumping && keyDOWN.isUp) {
-                // console.log("LET GO OF SPCACE");
                 this.jump--;
                 this.jumping = false;
             }
@@ -436,44 +436,33 @@ class Play extends Phaser.Scene {
 
             // reset things when they go off screen
             if(this.car.body.x <-300){
-                // console.log("OFFSCREEN XD"); 
                 this.car_reset();
             }
             
             if(this.meteor.body.x <-200||this.meteor.body.velocity.x==0){
-                // console.log("OFFSCREEN XD"); 
                 this.meteor_reset();
             }
-            
-            // increase meteor speed if nearby
-            if((this.meteor.tilePositionX-this.car.tilePositionX)>-100||(this.car.tilePositionX-this.meteor.tilePositionX)>-100){
-                this.meteor.body.velocity.x+=30;
-            }
-
-            console.log(this.player.body.velocity.x);
 
             // controlling the ducking
-            if (keyDOWN.isDown){
+            if (keyDOWN.isDown && this.player.y > game.config.height - 30){
                 if(Phaser.Input.Keyboard.JustDown(keyDOWN)){
-                    this.player.anims.play('duck', true);
+                    // this.player.anims.play('duck', true);
                     this.duck.play(); 
                 this.slide.setLoop(true);
                 this.slide.play();
                 }
                 
-                // this.player.angle = 90;
                 this.player.setSize(65,40);
                 this.player.setDisplaySize(45,70);
                 
                 if(!this.jumping){
-                // this.player.y = 467.5;
                 this.player.body.setVelocityY(700);
                 }
             }
 
 
             // resetting after done ducking
-            if(Phaser.Input.Keyboard.JustUp(keyDOWN)){
+            if(Phaser.Input.Keyboard.JustUp(keyDOWN) && this.player.y > game.config.height - 30){
                 this.slide.setLoop(false);
                 this.slide.stop();
                 
@@ -481,8 +470,6 @@ class Play extends Phaser.Scene {
                     this.player.y = 500;
                     this.player.body.setVelocityY(0);
                 }
-                // this.player.setSize(40,65);
-                // this.player.setDisplaySize(45,70);
 
             }
 
@@ -491,11 +478,6 @@ class Play extends Phaser.Scene {
                 this.player.body.setVelocityY(0);
             }
 
-            //console.log("X"+this.player.x+" Y "+this.player.y);
-            //console.log(this.car.body.velocity.x);
-            // console.log("shield: "+this.shield.body.velocity.x);
-            // console.log("player health: "+this.p1Health);
-            
             // put shield sprite on player
             if(this.p1Health>1){
                 this.trash.x = this.player.x+10;
@@ -503,11 +485,10 @@ class Play extends Phaser.Scene {
             }
 
             // when player health reaches 0 or off screen, end the game
-            if(this.p1Health <= 0 || this.player.x<0){
+            if(this.p1Health <= 0 || this.player.x< - 40){
                 this.gameOver = true;
             }
         }  
-    // console.log("CAR SPEED VROOM: "+this.car.body.velocity.x);
     }
 
 
