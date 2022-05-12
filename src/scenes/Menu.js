@@ -42,6 +42,7 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
         this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city').setOrigin(0);
+        
 
         dropshadow.color = '#221A49';
         this.add.text(game.config.width/2 + 4, game.config.height/4 + 4, 'RunPocalypse', dropshadow).setOrigin(0.5);

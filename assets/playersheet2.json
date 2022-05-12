@@ -1,0 +1,174 @@
+{
+    "frames": {
+        "run_0006": {
+            "frame": {
+                "x": 487,
+                "y": 21,
+                "w": 75,
+                "h": 124
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 75,
+                "h": 124
+            },
+            "sourceSize": {
+                "w": 75,
+                "h": 124
+            }
+        },
+        "run_0008": {
+            "frame": {
+                "x": 663,
+                "y": 21,
+                "w": 63,
+                "h": 126
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 63,
+                "h": 126
+            },
+            "sourceSize": {
+                "w": 63,
+                "h": 126
+            }
+        },
+        "run_0001": {
+            "frame": {
+                "x": 17,
+                "y": 22,
+                "w": 78,
+                "h": 124
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 78,
+                "h": 124
+            },
+            "sourceSize": {
+                "w": 78,
+                "h": 124
+            }
+        },
+        "run_0002": {
+            "frame": {
+                "x": 115,
+                "y": 22,
+                "w": 81,
+                "h": 123
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 81,
+                "h": 123
+            },
+            "sourceSize": {
+                "w": 81,
+                "h": 123
+            }
+        },
+        "run_0004": {
+            "frame": {
+                "x": 301,
+                "y": 22,
+                "w": 66,
+                "h": 124
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 66,
+                "h": 124
+            },
+            "sourceSize": {
+                "w": 66,
+                "h": 124
+            }
+        },
+        "run_0005": {
+            "frame": {
+                "x": 387,
+                "y": 22,
+                "w": 80,
+                "h": 123
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 80,
+                "h": 123
+            },
+            "sourceSize": {
+                "w": 80,
+                "h": 123
+            }
+        },
+        "run_0007": {
+            "frame": {
+                "x": 582,
+                "y": 22,
+                "w": 61,
+                "h": 124
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 61,
+                "h": 124
+            },
+            "sourceSize": {
+                "w": 61,
+                "h": 124
+            }
+        },
+        "run_0003": {
+            "frame": {
+                "x": 216,
+                "y": 23,
+                "w": 65,
+                "h": 122
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 65,
+                "h": 122
+            },
+            "sourceSize": {
+                "w": 65,
+                "h": 122
+            }
+        }
+    },
+    "meta": {
+        "app": "https://www.leshylabs.com/apps/sstool/",
+        "version": "Leshy SpriteSheet Tool v0.8.4",
+        "image": "spritesheet.png",
+        "size": {
+            "w": 900,
+            "h": 500
+        },
+        "scale": 1
+    }
+}

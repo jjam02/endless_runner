@@ -4,15 +4,21 @@ class Controls extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('city', './assets/bg.png');
         this.load.image('player','./assets/player.png')
         this.load.image('floor','./assets/floor.png')
         this.load.image('car','./assets/van_1.png')
         this.load.image('meteor','./assets/meteor.png')
         this.load.image('shield','./assets/shield.png')
+        this.load.atlas('player_atlas', './assets/playersheet.png', './assets/playermap.json');
     }
 
     create() {
+        this.PLAYER_SCALE = 0.6;
+        this.DUCK_SCALE = 0.5;
+        this.CAR_SCALE = 0.15;
+        this.METEOR_SCALE = 0.2;
+        this.SHIELD_SCALE = 2;
+
         let textConfig = {
             fontFamily: 'Alagard',
             fontSize: '90px',
@@ -36,8 +42,7 @@ class Controls extends Phaser.Scene {
             fixedWidth: 0
         }
         this.sfx_select = this.sound.add('select');
-        this.cityscape = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'city').setOrigin(0);
-
+        this.add.rectangle(0, 0, game.config.width, game.config.height, '0xaaaaaa').setOrigin(0);
         this.add.text(game.config.width/2 + 4, game.config.height/2 - 176, 'Controls', dropshadow).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 - 180, 'Controls', textConfig).setOrigin(0.5);
 
@@ -64,25 +69,24 @@ class Controls extends Phaser.Scene {
         this.maxPage = 5;
         // Jump, Duck, Shield, Jump on Car, Jump on Meteor
 
-        this.physics.add.sprite(game.config.width/4, game.config.height - 4*tileSize,  'floor').setScale(SCALE).setOrigin(0);
         // creating each controls page
-        this.playerPage1 = this.add.sprite(game.config.width/2 - 100, game.config.height/2 + 30, 'player').setOrigin(0.5);
-        this.carPage1 = this.add.sprite(game.config.width/2 + 100, game.config.height/2 + 105, 'car').setOrigin(0.5);
+        this.playerPage1 = this.add.sprite(game.config.width/2 - 100, game.config.height/2 + 30, 'player_atlas', 'run_0001').setScale(this.PLAYER_SCALE).setOrigin(0.5);
+        this.carPage1 = this.add.sprite(game.config.width/2 + 100, game.config.height/2 + 95, 'car').setScale(this.CAR_SCALE).setOrigin(0.5);
+        this.meteorPage1 = this.add.sprite(game.config.width/2, game.config.height/2 + 80, 'meteor').setScale(this.METEOR_SCALE).setOrigin(0.5);
         
-        this.meteorPage1 = this.add.sprite(game.config.width/2, game.config.height/2 + 105, 'meteor').setOrigin(0.5);
-        
+        this.playerPage2 = this.add.sprite(game.config.width/2 - 100, game.config.height/2 + 100, 'player_atlas', 'duck_0001').setScale(this.DUCK_SCALE).setOrigin(0.5);
+        // this.playerPage2.angle = 90;
+        this.meteorPage2 = this.add.sprite(game.config.width/2 + 100, game.config.height/2 + 40, 'meteor').setScale(this.METEOR_SCALE).setOrigin(0.5);
 
-        this.playerPage2 = this.add.sprite(game.config.width/2 - 100, game.config.height/2 + 100, 'player').setOrigin(0.5);
-        this.playerPage2.angle = 90;
-        this.meteorPage2 = this.add.sprite(game.config.width/2 + 100, game.config.height/2 + 40, 'meteor').setOrigin(0.5);
+        this.shieldPage3 = this.add.sprite(game.config.width/2, game.config.height/2 + 40, 'shield').setScale(this.SHIELD_SCALE).setOrigin(0.5);
 
-        this.shieldPage3 = this.add.sprite(game.config.width/2, game.config.height/2 + 40, 'shield').setOrigin(0.5);
+        this.playerPage4 = this.add.sprite(game.config.width/2 + 20, game.config.height/2 + 22, 'player_atlas', 'run_0002').setScale(this.PLAYER_SCALE).setOrigin(0.5);
+        this.carPage4 = this.add.sprite(game.config.width/2, game.config.height/2 + 95, 'car').setScale(this.CAR_SCALE).setOrigin(0.5);
 
-        this.playerPage4 = this.add.sprite(game.config.width/2, game.config.height/2 + 52, 'player').setOrigin(0.5);
-        this.carPage4 = this.add.sprite(game.config.width/2, game.config.height/2 + 105, 'car').setOrigin(0.5);
+        this.meteorPage5 = this.add.sprite(game.config.width/2+50, game.config.height/2 + 60, 'meteor').setScale(this.METEOR_SCALE).setOrigin(0.5);
+        this.playerPage5 = this.add.sprite(game.config.width/2, game.config.height/2 + 10, 'player_atlas', 'run_0006').setScale(this.PLAYER_SCALE).setOrigin(0.5);
 
-        this.playerPage5 = this.add.sprite(game.config.width/2, game.config.height/2 + 10, 'player').setOrigin(0.5);
-        this.meteorPage5 = this.add.sprite(game.config.width/2, game.config.height/2 + 60, 'meteor').setOrigin(0.5);
+        this.physics.add.sprite(game.config.width/4, game.config.height - 4*tileSize,  'floor').setScale(SCALE).setOrigin(0);
 
         this.wind = this.sound.add('wind');
         this.wind.play();
