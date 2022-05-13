@@ -230,7 +230,7 @@ class Play extends Phaser.Scene {
         this.gameOverShadow = this.add.text(game.config.width/2, game.config.height/2, '', textConfig).setOrigin(0.5);
 
         // powerup spawn
-        this.time.addEvent({ delay: 1000, callback: this.shieldSpawn, callbackScope: this, loop: true });
+        this.time.addEvent({ delay: 10000, callback: this.shieldSpawn, callbackScope: this, loop: true });
 
         // play bgm
         this.bgm.setLoop(true);
