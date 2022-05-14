@@ -376,34 +376,7 @@ class Play extends Phaser.Scene {
             // console.log(this.player.anims.currentFrame.index);
             // console.log(this.player.anims);
 
-            // tweaking running anim hitboxes
-            // switch (this.player.anims.currentFrame.index) {
-            //     case 1:
-            //         this.player.setOffset(20, 10);
-            //         break;
-            //     case 2:
-            //         this.player.setOffset(25, 10);
-            //         break;
-            //     case 3:
-            //         this.player.setOffset(15, 10);
-            //         break;
-            //     case 4:
-            //         this.player.setOffset(15, 10);
-            //         break;
-            //     case 5:
-            //         this.player.setOffset(20, 10);
-            //         break;
-            //     case 6:
-            //         this.player.setOffset(20, 10);
-            //         break;
-            //     case 7:
-            //         this.player.setOffset(10, 10);
-            //         break;
-            //     case 8:
-            //         this.player.setOffset(10, 10);
-            //         break;
-            //}
-
+           
 
             // tracking player x position
             if(this.player.x<150){
