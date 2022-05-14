@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
         this.load.image('shield','./assets/shield.png')
         // this.load.atlas('player_atlas', './assets/playersheet.png', './assets/playermap.json');
         this.load.atlas('player_atlas2', './assets/playersheet2.png', './assets/playersheet2.json');
+        this.load.atlas('duck_atlas', './assets/playersheet_duck.png', './assets/playersheet_duck.json');
        
     }
 
@@ -157,7 +158,7 @@ class Play extends Phaser.Scene {
                 this.p1Health = 0;
             }
         });
-        this.car_col.overlapOnly = true;
+        //this.car_col.overlapOnly = true;
         this.physics.add.collider(this.meteors, this.player, ()=>{
             this.trash.alpha= 0;
             this.meteor_reset();
@@ -250,7 +251,7 @@ class Play extends Phaser.Scene {
         //     repeat: -1
         // });
 
-        this.anims.create({
+        this.running =this.anims.create({
             key: 'run2',
             frames: this.anims.generateFrameNames('player_atlas2', {
                 prefix: 'run_',
@@ -262,6 +263,23 @@ class Play extends Phaser.Scene {
             frameRate: 15,
             repeat: -1
         });
+
+        this.ducking =this.anims.create({
+            key: 'duck',
+            frames: this.anims.generateFrameNames('duck_atlas', {
+                prefix: 'duck_',
+                start: 1,
+                end: 6,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 15,
+            repeat: -1
+        });
+
+
+        this.anims.addMix('run2', 'duck',100);
+        this.anims.addMix('duck', 'run2', 100);
 
         // this.anims.create({
         //     key: 'duck',
@@ -344,13 +362,14 @@ class Play extends Phaser.Scene {
 
         // what to do in game runtime
         if(!this.gameOver){
+            console.log(this.player.anims.getName());
                 
             // make bg scroll
             this.cityscape.tilePositionX += this.scrollSpeed;
 
             // check for player touching ground
             this.player.onGround = this.player.body.touching.down;
-            this.player.anims.play('run2', true);
+            this.player.play('run2',true);
             this.player.setSize(45,100);
             this.player.setDisplaySize(45,70);
 
@@ -358,32 +377,32 @@ class Play extends Phaser.Scene {
             // console.log(this.player.anims);
 
             // tweaking running anim hitboxes
-            switch (this.player.anims.currentFrame.index) {
-                case 1:
-                    this.player.setOffset(20, 10);
-                    break;
-                case 2:
-                    this.player.setOffset(25, 10);
-                    break;
-                case 3:
-                    this.player.setOffset(15, 10);
-                    break;
-                case 4:
-                    this.player.setOffset(15, 10);
-                    break;
-                case 5:
-                    this.player.setOffset(20, 10);
-                    break;
-                case 6:
-                    this.player.setOffset(20, 10);
-                    break;
-                case 7:
-                    this.player.setOffset(10, 10);
-                    break;
-                case 8:
-                    this.player.setOffset(10, 10);
-                    break;
-            }
+            // switch (this.player.anims.currentFrame.index) {
+            //     case 1:
+            //         this.player.setOffset(20, 10);
+            //         break;
+            //     case 2:
+            //         this.player.setOffset(25, 10);
+            //         break;
+            //     case 3:
+            //         this.player.setOffset(15, 10);
+            //         break;
+            //     case 4:
+            //         this.player.setOffset(15, 10);
+            //         break;
+            //     case 5:
+            //         this.player.setOffset(20, 10);
+            //         break;
+            //     case 6:
+            //         this.player.setOffset(20, 10);
+            //         break;
+            //     case 7:
+            //         this.player.setOffset(10, 10);
+            //         break;
+            //     case 8:
+            //         this.player.setOffset(10, 10);
+            //         break;
+            //}
 
 
             // tracking player x position
@@ -446,14 +465,16 @@ class Play extends Phaser.Scene {
             // controlling the ducking
             if (keyDOWN.isDown && this.player.y > game.config.height - 30){
                 if(Phaser.Input.Keyboard.JustDown(keyDOWN)){
-                    // this.player.anims.play('duck', true);
+
+                    
+                    this.player.play('duck', true);
                     this.duck.play(); 
                 this.slide.setLoop(true);
                 this.slide.play();
                 }
                 
                 this.player.setSize(65,40);
-                this.player.setDisplaySize(45,70);
+                //this.player.setDisplaySize(45,70);
                 
                 if(!this.jumping){
                 this.player.body.setVelocityY(700);
@@ -463,6 +484,12 @@ class Play extends Phaser.Scene {
 
             // resetting after done ducking
             if(Phaser.Input.Keyboard.JustUp(keyDOWN) && this.player.y > game.config.height - 30){
+
+                if (this.player.anims.getName() === 'duck'){
+    
+                    this.player.stop('duck',true);
+                    this.player.play('run2',true);
+                }
                 this.slide.setLoop(false);
                 this.slide.stop();
                 
@@ -474,7 +501,7 @@ class Play extends Phaser.Scene {
             }
 
             if(this.player.y>game.config.height) {
-                this.player.y = 500;
+                this.player.y = 500; 
                 this.player.body.setVelocityY(0);
             }
 
